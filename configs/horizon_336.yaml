@@ -1,0 +1,32 @@
+# ETTh1 LSTM Forecasting — horizon 336 configuration
+
+data:
+  csv_path: data/raw/ETTh1.csv
+  lookback: 192
+  horizon: 336
+  target_index: 0
+  num_workers: 0
+
+training:
+  batch_size: 64
+  epochs: 40
+  learning_rate: 0.001
+  weight_decay: 0.0
+  early_stopping_patience: 8
+  grad_clip: 1.0
+
+model:
+  input_size: 1
+  hidden_size: 128
+  num_layers: 2
+  dropout: 0.2
+  revin: true
+  
+paths:
+  checkpoints_dir: checkpoints/h336
+  logs_dir: logs/h336
+  results_dir: results/h336
+
+seed: 42
+
+device: auto  # auto | cpu | cuda

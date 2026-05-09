@@ -15,12 +15,12 @@ from src.utils import get_device, get_logger, load_config, set_seed
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate LSTM forecaster on ETTh1 test set")
-    parser.add_argument("--config", type=str, default="configs/config.yaml")
+    parser.add_argument("--config", type=str, default="configs/horizon_96.yaml")
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="checkpoints/best.pt",
-        help="Path to the trained model checkpoint",
+        default=None,
+        help="Path to checkpoint. If omitted, uses {paths.checkpoints_dir}/best.pt from config.",
     )
     return parser.parse_args()
 
@@ -28,6 +28,12 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     cfg = load_config(args.config)
+    
+    checkpoint_path = (
+        args.checkpoint
+        if args.checkpoint is not None
+        else Path(cfg["paths"]["checkpoints_dir"]) / "best.pt"
+    )
 
     set_seed(cfg["seed"])
     device = get_device(cfg["device"])
@@ -55,7 +61,7 @@ def main() -> None:
         revin=cfg["model"].get("revin", False)
     ).to(device)
 
-    checkpoint = torch.load(args.checkpoint, map_location=device, weights_only=True)
+    checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=True)
     model.load_state_dict(checkpoint["model_state_dict"])
     logger.info(
         f"Loaded checkpoint from epoch {checkpoint['epoch']} "
@@ -85,11 +91,6 @@ def main() -> None:
     with open(metrics_path, "w") as f:
         json.dump({"normalized": norm_metrics, "denormalized": denorm_metrics}, f, indent=2)
     logger.info(f"Metrics saved to {metrics_path}")
-
-    # Plot a few prediction examples (in °C)
-    plot_path = Path("docs/images/predictions.png")
-    plot_predictions(y_pred_denorm, y_true_denorm, plot_path, n_samples=4)
-    logger.info(f"Predictions plot saved to {plot_path}")
 
 
 if __name__ == "__main__":

@@ -1,18 +1,18 @@
-# ETTh1 LSTM Forecasting — main configuration
+# ETTh1 LSTM Forecasting — horizon 720 configuration
 
 data:
   csv_path: data/raw/ETTh1.csv
   lookback: 192
-  horizon: 96
+  horizon: 720
   target_index: 0
   num_workers: 0
 
 training:
   batch_size: 64
-  epochs: 30
+  epochs: 40
   learning_rate: 0.001
   weight_decay: 0.0
-  early_stopping_patience: 6
+  early_stopping_patience: 8
   grad_clip: 1.0
 
 model:
@@ -23,9 +23,9 @@ model:
   revin: true
   
 paths:
-  checkpoints_dir: checkpoints
-  logs_dir: logs
-  results_dir: results
+  checkpoints_dir: checkpoints/h720
+  logs_dir: logs/h720
+  results_dir: results/h720
 
 seed: 42
 

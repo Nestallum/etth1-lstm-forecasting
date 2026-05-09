@@ -41,41 +41,35 @@ def compute_metrics(y_pred: np.ndarray, y_true: np.ndarray) -> dict[str, float]:
     return {"mse": float(mse), "mae": float(mae)}
 
 
-def plot_predictions(
+def plot_single_sample_with_history(
+    window: np.ndarray,
     y_pred: np.ndarray,
     y_true: np.ndarray,
-    output_path: Path | str,
-    n_samples: int = 4,
-    seed: int = 42,
+    ax: plt.Axes,
+    title: str = "",
 ) -> None:
-    """Plot a few random prediction-vs-truth windows side by side.
+    """Plot one sample with input history, prediction, and ground truth.
 
     Args:
-        y_pred: array of shape (N, horizon), predictions in original units.
-        y_true: array of shape (N, horizon), targets in original units.
-        output_path: where to save the figure.
-        n_samples: number of random examples to plot.
-        seed: for reproducible sample selection.
+        window: Input window in original units, shape (lookback,).
+        y_pred: Predicted values in original units, shape (horizon,).
+        y_true: True values in original units, shape (horizon,).
+        ax: Matplotlib axis to plot into.
+        title: Optional title for the subplot.
     """
-    rng = np.random.default_rng(seed)
-    indices = rng.choice(len(y_pred), size=n_samples, replace=False)
+    lookback = len(window)
+    horizon = len(y_pred)
+    t_input = np.arange(-lookback, 0)
+    t_forecast = np.arange(0, horizon)
 
-    fig, axes = plt.subplots(n_samples, 1, figsize=(12, 2.5 * n_samples), sharex=True)
-    if n_samples == 1:
-        axes = [axes]
-
-    for ax, idx in zip(axes, indices):
-        ax.plot(y_true[idx], label="Ground truth", color="steelblue", linewidth=1.5)
-        ax.plot(y_pred[idx], label="Prediction", color="crimson", linewidth=1.5, linestyle="--")
-        ax.set_ylabel("OT (°C)")
-        ax.legend(loc="upper right")
-        ax.grid(alpha=0.3)
-        ax.set_title(f"Sample #{idx}")
-
-    axes[-1].set_xlabel("Forecast step (hour)")
-    plt.tight_layout()
-
-    output_path = Path(output_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, dpi=120, bbox_inches="tight")
-    plt.close(fig)
+    ax.plot(t_input, window, label="Input window", color="steelblue", linewidth=1.2)
+    ax.plot(t_forecast, y_true, label="Ground truth", color="seagreen", linewidth=1.5)
+    ax.plot(
+        t_forecast, y_pred, label="Prediction", color="crimson",
+        linewidth=1.5, linestyle="--",
+    )
+    ax.axvline(0, color="black", linestyle=":", linewidth=0.8, alpha=0.6)
+    ax.set_ylabel("OT (°C)")
+    ax.set_title(title)
+    ax.legend(loc="upper right", fontsize=9)
+    ax.grid(alpha=0.3)
