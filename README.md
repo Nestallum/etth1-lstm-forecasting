@@ -166,4 +166,4 @@ A ~3.5× reduction in MSE from a parameter-free, plug-and-play normalization. On
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
