@@ -13,6 +13,8 @@ The task: predict the Oil Temperature (`OT`) of an industrial electrical transfo
 |     336 |           0.0835 |     2.08 |
 |     720 |           0.0980 |     2.27 |
 
+Performance degrades smoothly with horizon length, from 1.63°C MAE at 96h (4 days) to 2.27°C at 720h (30 days), with no catastrophic drop on the longest horizons.
+
 These results are within the range of recent competitive models on this benchmark (DLinear, RLinear, PatchTST, iTransformer), illustrating the empirical finding from the literature that on long-term forecasting benchmarks, **proper handling of distribution shift via instance normalization (RevIN) accounts for most of the gain, regardless of model architecture**.
 
 ![Forecasts across horizons](docs/images/horizons_comparison.png)
