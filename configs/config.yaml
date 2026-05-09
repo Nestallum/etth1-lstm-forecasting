@@ -9,10 +9,10 @@ data:
 
 training:
   batch_size: 64
-  epochs: 50
+  epochs: 30
   learning_rate: 0.001
   weight_decay: 0.0
-  early_stopping_patience: 10
+  early_stopping_patience: 6
   grad_clip: 1.0
 
 model:
@@ -20,7 +20,8 @@ model:
   hidden_size: 128
   num_layers: 2
   dropout: 0.2
-
+  revin: true
+  
 paths:
   checkpoints_dir: checkpoints
   logs_dir: logs

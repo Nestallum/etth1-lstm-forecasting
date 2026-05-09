@@ -52,6 +52,7 @@ def main() -> None:
         num_layers=cfg["model"]["num_layers"],
         horizon=cfg["data"]["horizon"],
         dropout=cfg["model"]["dropout"],
+        revin=cfg["model"].get("revin", False)
     ).to(device)
     logger.info(f"Model: {sum(p.numel() for p in model.parameters()):,} parameters")
 
