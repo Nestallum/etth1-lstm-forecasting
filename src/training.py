@@ -14,6 +14,7 @@ import torch.nn as nn
 from torch.optim import Optimizer
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
+from tqdm import tqdm
 
 
 class Trainer:
@@ -68,12 +69,13 @@ class Trainer:
 
         for epoch in range(1, self.epochs + 1):
             t0 = time.time()
-            train_loss = self._train_one_epoch()
+            train_loss = self._train_one_epoch(epoch)
             val_loss = self._validate()
             elapsed = time.time() - t0
 
             self.writer.add_scalar("loss/train", train_loss, epoch)
             self.writer.add_scalar("loss/val", val_loss, epoch)
+            self.writer.add_scalar("lr", self.optimizer.param_groups[0]["lr"], epoch)
 
             self.logger.info(
                 f"Epoch {epoch:03d} | "
@@ -97,13 +99,18 @@ class Trainer:
 
         self.writer.close()
 
-    def _train_one_epoch(self) -> float:
+    def _train_one_epoch(self, epoch: int) -> float:
         """Run one training epoch and return the average loss."""
         self.model.train()
         total_loss = 0.0
         n_batches = 0
 
-        for x, y in self.train_loader:
+        pbar = tqdm(
+            self.train_loader,
+            desc=f"Epoch {epoch:03d}",
+            leave=False,
+        )
+        for x, y in pbar:
             x, y = x.to(self.device), y.to(self.device)
 
             self.optimizer.zero_grad()
@@ -118,6 +125,7 @@ class Trainer:
 
             total_loss += loss.item()
             n_batches += 1
+            pbar.set_postfix(loss=f"{loss.item():.4f}")
 
         return total_loss / n_batches
 

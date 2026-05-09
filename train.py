@@ -13,7 +13,6 @@ from src.model import LSTMForecaster
 from src.training import Trainer
 from src.utils import get_device, get_logger, load_config, set_seed
 
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train LSTM forecaster on ETTh1")
     parser.add_argument(
@@ -56,7 +55,7 @@ def main() -> None:
     ).to(device)
     logger.info(f"Model: {sum(p.numel() for p in model.parameters()):,} parameters")
 
-    optimizer = optim.Adam(
+    optimizer = optim.AdamW(
         model.parameters(),
         lr=cfg["training"]["learning_rate"],
         weight_decay=cfg["training"]["weight_decay"],
