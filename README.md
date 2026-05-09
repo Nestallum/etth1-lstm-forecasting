@@ -16,7 +16,7 @@ The task: predict the Oil Temperature (`OT`) of an industrial electrical transfo
 These results are within the range of recent competitive models on this benchmark (DLinear, RLinear, PatchTST, iTransformer), illustrating the empirical finding from the literature that on long-term forecasting benchmarks, **proper handling of distribution shift via instance normalization (RevIN) accounts for most of the gain, regardless of model architecture**.
 
 ![Forecasts across horizons](docs/images/horizons_comparison.png)
-*Predictions on a single test sample (#800) across the four standard ETTh1 horizons. The model captures level and daily seasonality consistently; quality degrades smoothly with horizon length.*
+<sub>*Predictions on a single test sample (#800) across the four standard ETTh1 horizons. The model captures level and daily seasonality consistently; quality degrades smoothly with horizon length.*</sub>
 
 ## Project structure
 
