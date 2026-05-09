@@ -85,7 +85,7 @@ class Trainer:
                 self.best_val_loss = val_loss
                 self.epochs_without_improvement = 0
                 self._save_checkpoint(epoch, val_loss)
-                self.logger.info(f"  ↳ new best val_loss, checkpoint saved")
+                self.logger.info("  -> new best val_loss, checkpoint saved")
             else:
                 self.epochs_without_improvement += 1
                 if self.epochs_without_improvement >= self.early_stopping_patience:
